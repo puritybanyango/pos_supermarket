@@ -11,7 +11,7 @@ router = APIRouter(prefix="/sale-items", tags=["Sale Item"])
 
 @router.post("/", response_model=SaleItemResponse, status_code=status.HTTP_201_CREATED)
 def create_sale_item(sale_id: int, product_id: int, quantity: int, db: Session = Depends(get_db)):
-    # 1. Prevent invalid database records as required by your prompt instructions
+  
     if not db.query(Sale).filter(Sale.id == sale_id).first():
         raise HTTPException(status_code=400, detail=f"Parent Sale record matching ID {sale_id} does not exist.")
         
@@ -21,11 +21,10 @@ def create_sale_item(sale_id: int, product_id: int, quantity: int, db: Session =
     if product.stock_qty < quantity:
         raise HTTPException(status_code=400, detail=f"Insufficient inventory levels. Available stock: {product.stock_qty}")
 
-    # 2. Derive price calculations
+
     unit_price = product.price
     total_price = Decimal(str(unit_price)) * Decimal(str(quantity))
 
-    # 3. Save record and deduct stock level
     new_item = SaleItem(
         sale_id=sale_id,
         product_id=product_id,
@@ -33,7 +32,7 @@ def create_sale_item(sale_id: int, product_id: int, quantity: int, db: Session =
         unit_price=unit_price,
         total_price=total_price
     )
-    product.stock_qty -= quantity  # Deduct stock units safely
+    product.stock_qty -= quantity
     
     db.add(new_item)
     db.commit()
@@ -62,12 +61,12 @@ def update_sale_item_quantity(id: int, new_quantity: int, db: Session = Depends(
         
     product = db.query(Product).filter(Product.id == item.product_id).first()
     
-    # Calculate stock adjustment delta difference
+    
     quantity_difference = new_quantity - item.quantity
     if product.stock_qty < quantity_difference:
         raise HTTPException(status_code=400, detail=f"Insufficient stock for this change. Needed: {quantity_difference}")
 
-    # Adjust stock and update mathematics metrics
+ 
     product.stock_qty -= quantity_difference
     item.quantity = new_quantity
     item.total_price = Decimal(str(item.unit_price)) * Decimal(str(new_quantity))
@@ -83,7 +82,7 @@ def delete_sale_item(id: int, db: Session = Depends(get_db)):
     if not item:
         raise HTTPException(status_code=404, detail=f"Sale Item record matching ID {id} does not exist.")
     
-    # Return allocated quantity inventory units back into stock before removing line
+
     product = db.query(Product).filter(Product.id == item.product_id).first()
     if product:
         product.stock_qty += item.quantity

@@ -8,5 +8,4 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)
 
-    # Back-reference connection tracking
     products = relationship("Product", back_populates="category")

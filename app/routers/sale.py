@@ -10,7 +10,7 @@ router = APIRouter(prefix="/sales", tags=["Sale"])
 @router.post("/", response_model=SaleResponse, status_code=status.HTTP_201_CREATED)
 def create_sale_transaction(payload: SaleCreate, db: Session = Depends(get_db)):
     """Processes a new checkout line item transaction and automatically handles calculations and stock drops."""
-    # Maps the primary nested list payload element down to the single line testing service
+   
     first_item = payload.items[0]
     return SaleService.create(db, first_item.product_id, first_item.quantity, payload.user_id, payload.customer_id, float(payload.discount_amount))
 

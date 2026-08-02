@@ -8,7 +8,6 @@ from .sale_item import SaleItem
 from .payment import Payment
 from .receipt import Receipt
 
-# Expose definitions cleanly to the app ecosystem
 __all__ = [
     "Category",
     "Supplier",

@@ -11,7 +11,6 @@ from app.routers.sale_item import router as SaleItem_router
 
 api_router = APIRouter()
 
-# Registering all individual endpoints
 api_router.include_router(category_router)
 api_router.include_router(supplier_router)
 api_router.include_router(product_router)

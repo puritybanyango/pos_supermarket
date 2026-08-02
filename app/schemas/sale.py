@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
 from decimal import Decimal
-# Using fully qualified absolute package naming so Python cannot lose the directory path
+
 from app.schemas.sale_item import SaleItemCreate, SaleItemResponse
 
 class SaleCreate(BaseModel):
